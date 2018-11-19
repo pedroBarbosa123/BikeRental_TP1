@@ -216,7 +216,6 @@ public class BikeRentaltests {
         b6.getDeposits().get(0).getLocks().get(2).close();
         assertEquals(10, b6.getBicycle(1, 1, 0), "Não deveria ter bicicletas disponiveis");
     }
-
     @Test
     public void getBicycleAlreadyRented_gB6() throws UserDoesNotExists, UserAlreadyExists {
         BikeRentalSystem b6 = new BikeRentalSystem(1);
@@ -253,6 +252,7 @@ public class BikeRentaltests {
         Bike bike = new Bike(7);
         bike.setInUSe(false);
         b8.registerUser(1,"lkj",1);
+        b8.getUsers().get(0).setCredit(100);
         new Deposit(1);
         b8.addLock(1,1);
         b8.addLock(1,2);
@@ -269,6 +269,7 @@ public class BikeRentaltests {
         Bike bike = new Bike(7);
         bike.setInUSe(true);
         b8.registerUser(1,"lkj",1);
+        b8.getUsers().get(0).setCredit(100);
         b8.getUsers().get(0).setBike(bike);
         new Deposit(1);
         b8.addLock(1,1);
@@ -296,22 +297,23 @@ public class BikeRentaltests {
         assertEquals(-1,b8.returnBicycle(1,1,0),"Endtime errado");
     }
 
-    @Disabled
     @Test
     public void returnBicycleValidtest_rB7() throws UserAlreadyExists{
         BikeRentalSystem b8 = new BikeRentalSystem(1);
         Bike bike = new Bike(7);
         bike.setInUSe(true);
         b8.registerUser(1,"lkj",1);
+        b8.getUsers().get(0).setCredit(100);
         b8.getUsers().get(0).setBike(bike);
+        b8.getUsers().get(0).setStartRental(1);
         new Deposit(1);
         b8.addLock(1,1);
         b8.addLock(1,2);
         b8.addLock(1,3);
         b8.getDeposits().get(0).getLocks().get(0).open();
-        b8.getDeposits().get(0).getLocks().get(1).open();
+        b8.getDeposits().get(0).getLocks().get(1).close();
         b8.getDeposits().get(0).getLocks().get(2).close();
-        assertEquals(2,b8.returnBicycle(1,1,3),"A bicicleta nao conseguiu ser devolvida");
+        assertEquals(98,b8.returnBicycle(1,1,3),"A bicicleta nao conseguiu ser devolvida");
     }
 
     @Test
