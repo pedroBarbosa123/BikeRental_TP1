@@ -51,7 +51,7 @@ public class BikeRentaltests {
         assertThrows(UserAlreadyExists.class, () -> b.registerUser(5, "aaa", 1), "User duplicado");
     }
 
-
+    /*
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 3})
     public void registeredUserrentalProgramtest_REG6toREG9(int value) throws UserAlreadyExists {
@@ -60,6 +60,54 @@ public class BikeRentaltests {
         b2.registerUser(5, "aaa", value);
         boolean test = b2.getUsers().isEmpty();
         assertTrue(test, "Um dos BVA's rentalProgram falhou e foi o " + value);
+    }
+    */
+
+    @Test
+    public void registeredUserrentalProgramtest_REG6toREG9() throws UserAlreadyExists {
+
+        BikeRentalSystem b2 = new BikeRentalSystem(1);
+        b2.registerUser(5, "aaa", 0);
+        boolean test = b2.getUsers().isEmpty();
+        assertFalse(test, "Um dos BVA's rentalProgram falhou e foi o 0");
+    }
+
+    @Test
+    public void registeredUserrentalProgramtest_REG6toREG9_2() throws UserAlreadyExists {
+
+        BikeRentalSystem b2 = new BikeRentalSystem(1);
+        b2.registerUser(5, "aaa", 1);
+        boolean test = b2.getUsers().isEmpty();
+        assertTrue(test, "Um dos BVA's rentalProgram falhou e foi o 1");
+    }
+
+    @Test
+    public void registeredUserrentalProgramtest_REG6toREG9_3() throws UserAlreadyExists {
+
+        BikeRentalSystem b2 = new BikeRentalSystem(1);
+        b2.registerUser(5, "aaa", 2);
+        boolean test = b2.getUsers().isEmpty();
+        assertTrue(test, "Um dos BVA's rentalProgram falhou e foi o 2");
+    }
+
+    @Test
+    public void registeredUserrentalProgramtest_REG6toREG9_4() throws UserAlreadyExists {
+
+        BikeRentalSystem b2 = new BikeRentalSystem(1);
+        b2.registerUser(5, "aaa", 3);
+        boolean test = b2.getUsers().isEmpty();
+        assertFalse(test, "Um dos BVA's rentalProgram falhou e foi o 3");
+
+
+    }
+
+    @Test
+    public void registeredUserEmptyName() throws UserAlreadyExists {
+
+        BikeRentalSystem b2 = new BikeRentalSystem(1);
+        b2.registerUser(5, "", 1);
+        boolean test = b2.getUsers().isEmpty();
+        assertTrue(test, "O nome devia tar preenchido");
     }
 
     @Test
