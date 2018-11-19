@@ -232,4 +232,133 @@ public class BikeRentaltests {
         b6.getDeposits().get(0).getLocks().get(2).close();
         assertEquals(-1, b6.getBicycle(1, 1, 0), "O user ja tem uma bike alugada. nao pode alugar outra");
     }
+
+    @Test
+    public void returnBicycleInvalidIDUSERtest_rB1(){
+        BikeRentalSystem b8 = new BikeRentalSystem(1);
+        assertEquals(-1,b8.returnBicycle(1,-1,0),"O user nao pode ser encontrado");
+    }
+
+    @Test
+    public void returnBicycleInvalidDeposittest_rB2() throws UserAlreadyExists{
+        BikeRentalSystem b8 = new BikeRentalSystem(1);
+        b8.registerUser(3,"fsd",1);
+        assertEquals(-1,b8.returnBicycle(1,3,0),"O deposito nao pode ser encontrado");
+    }
+
+
+    @Test
+    public void returnBicycleNotRentedtest_rB6() throws UserAlreadyExists{
+        BikeRentalSystem b8 = new BikeRentalSystem(1);
+        Bike bike = new Bike(7);
+        bike.setInUSe(false);
+        b8.registerUser(1,"lkj",1);
+        new Deposit(1);
+        b8.addLock(1,1);
+        b8.addLock(1,2);
+        b8.addLock(1,3);
+        b8.getDeposits().get(0).getLocks().get(0).open();
+        b8.getDeposits().get(0).getLocks().get(1).open();
+        b8.getDeposits().get(0).getLocks().get(2).open();
+        assertEquals(-1,b8.returnBicycle(1,1,0),"A bicicleta nao tem dono");
+    }
+
+    @Test
+    public void returnBicycleNoFreeSpacetest_rB3() throws UserAlreadyExists{
+        BikeRentalSystem b8 = new BikeRentalSystem(1);
+        Bike bike = new Bike(7);
+        bike.setInUSe(true);
+        b8.registerUser(1,"lkj",1);
+        b8.getUsers().get(0).setBike(bike);
+        new Deposit(1);
+        b8.addLock(1,1);
+        b8.addLock(1,2);
+        b8.addLock(1,3);
+        b8.getDeposits().get(0).getLocks().get(0).close();
+        b8.getDeposits().get(0).getLocks().get(1).close();
+        b8.getDeposits().get(0).getLocks().get(2).close();
+        assertEquals(-1,b8.returnBicycle(1,1,0),"A bicicleta nao tem dono");
+    }
+
+    @Test
+    public void returnBicycleInvalidEntimetest_rB5() throws UserAlreadyExists{
+        BikeRentalSystem b8 = new BikeRentalSystem(1);
+        Bike bike = new Bike(7);
+        bike.setInUSe(true);
+        b8.registerUser(1,"lkj",1);
+        new Deposit(1);
+        b8.addLock(1,1);
+        b8.addLock(1,2);
+        b8.addLock(1,3);
+        b8.getDeposits().get(0).getLocks().get(0).open();
+        b8.getDeposits().get(0).getLocks().get(1).open();
+        b8.getDeposits().get(0).getLocks().get(2).open();
+        assertEquals(-1,b8.returnBicycle(1,1,0),"Endtime errado");
+    }
+
+    @Disabled
+    @Test
+    public void returnBicycleValidtest_rB7() throws UserAlreadyExists{
+        BikeRentalSystem b8 = new BikeRentalSystem(1);
+        Bike bike = new Bike(7);
+        bike.setInUSe(true);
+        b8.registerUser(1,"lkj",1);
+        b8.getUsers().get(0).setBike(bike);
+        new Deposit(1);
+        b8.addLock(1,1);
+        b8.addLock(1,2);
+        b8.addLock(1,3);
+        b8.getDeposits().get(0).getLocks().get(0).open();
+        b8.getDeposits().get(0).getLocks().get(1).open();
+        b8.getDeposits().get(0).getLocks().get(2).close();
+        assertEquals(2,b8.returnBicycle(1,1,3),"A bicicleta nao conseguiu ser devolvida");
+    }
+
+    @Test
+    public void rentalFeeValidrentalProgram1test_brF4(){
+        BikeRentalSystem b9 = new BikeRentalSystem(1);
+        assertEquals(4,b9.bicycleRentalFee(1,1,5,0),"fee mal calculada");
+    }
+
+    @Test
+    public void rentalFeeInvalidtimestest_bRF3(){
+        BikeRentalSystem b9 = new BikeRentalSystem(10);
+        assertEquals(0,b9.bicycleRentalFee(1,5,1,3),"Endtime<Starttime");
+    }
+
+    @Test
+    public void rentalFeeInvalidrentalProgramtest_bRF1(){
+        BikeRentalSystem b9 = new BikeRentalSystem(1);
+        assertEquals(0,b9.bicycleRentalFee(0,1,2,3),"rentalProgram 0 devia dar 0");
+    }
+
+    @Test
+    public void rentalFeeInvalidrentalProgramtest_bRF2(){
+        BikeRentalSystem b9 = new BikeRentalSystem(10);
+        assertEquals(0,b9.bicycleRentalFee(3,1,5,10),"rentalProgram 3 devia dar 0");
+    }
+
+    @Test
+    public void rentalFeeInvalidrentalProgram2anddivionEquals0test_bRF5(){
+        BikeRentalSystem b9 = new BikeRentalSystem(1);
+        assertEquals(0,b9.bicycleRentalFee(2,1,5,10),"Não deu resto divisao = 0");
+    }
+
+    @Test
+    public void rentalFeeInvalidrentalProgram2anddivionNOTequal0test_bRF6(){
+        BikeRentalSystem b9 = new BikeRentalSystem(1);
+        assertEquals(4,b9.bicycleRentalFee(2,1,5,5),"fee mal calculada");
+    }
+
+    @Test
+    public void rentalFeeInvalidrentalProgram2anddivionNOTequal0test_bRF7(){
+        BikeRentalSystem b9 = new BikeRentalSystem(1);
+        assertEquals(12,b9.bicycleRentalFee(2,1,15,5),"fee mal calculada");
+    }
+
+    @Test
+    public void rentalFeeInvalidrentalProgram2invalidtimestest_bRF8(){
+        BikeRentalSystem b9 = new BikeRentalSystem(1);
+        assertEquals(0,b9.bicycleRentalFee(2,15,1,5),"startime>endtime");
+    }
 }
