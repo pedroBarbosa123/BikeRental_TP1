@@ -2,11 +2,7 @@ import Exceptions.UserAlreadyExists;
 import Exceptions.UserDoesNotExists;
 import Models.Bike;
 import Models.Deposit;
-import Models.Lock;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -42,7 +38,7 @@ public class BikeRentaltests {
     @Test
     public void registeredUserBVANegativetest_REG4() throws UserAlreadyExists {
         BikeRentalSystem b = new BikeRentalSystem(1);
-        b.registerUser((int) Integer.MAX_VALUE, "aaa", 1);
+        b.registerUser(Integer.MAX_VALUE, "aaa", 1);
         boolean test = b.getUsers().isEmpty();
         assertFalse(test, "A lista de Users devia estar vazia mas não está");
     }
@@ -134,7 +130,7 @@ public class BikeRentaltests {
 
 
     @Test
-    public void verifyCreditBVA_vC1() {
+    public void verifyCreditBVA_vC31() {
         BikeRentalSystem b5 = new BikeRentalSystem(1);
 
         boolean test = b5.verifyCredit(10);
@@ -142,7 +138,7 @@ public class BikeRentaltests {
     }
 
     @Test
-    public void verifyCreditNegativeBalanceUser() {
+    public void verifyCreditNegativeBalanceUser_vC3() {
         BikeRentalSystem b = new BikeRentalSystem(1);
 
         try {
@@ -156,7 +152,7 @@ public class BikeRentaltests {
     }
 
     @Test
-    public void verifyCreditPositiveBalanceUser() {
+    public void verifyCreditPositiveBalanceUser_vC2() {
         BikeRentalSystem b = new BikeRentalSystem(1);
 
         try {
@@ -170,48 +166,30 @@ public class BikeRentaltests {
     }
 
     @Test
-    public void getBicycleInvalidIDUSERtest() throws UserDoesNotExists {
+    public void getBicycleInvalidIDUSERtest_gB1(){
         BikeRentalSystem b6 = new BikeRentalSystem(1);
         assertThrows(UserDoesNotExists.class, () -> b6.getBicycle(1, 100, 0), "User deveria ser invalido");
     }
 
     @Test
-    public void getBicycleInvalidIDDeposittest() throws UserDoesNotExists, UserAlreadyExists {
+    public void getBicycleInvalidIDDeposittest_gb2() throws UserDoesNotExists, UserAlreadyExists {
         BikeRentalSystem b6 = new BikeRentalSystem(1);
         b6.registerUser(3, "asd", 1);
         assertEquals(-1, b6.getBicycle(1, 3, 0), "Deposito deveria dar inválido");
     }
 
     @Test
-    public void getBicycleInvalidCredittest() throws UserDoesNotExists, UserAlreadyExists {
+    public void getBicycleInvalidCredittest_gB3() throws UserDoesNotExists, UserAlreadyExists {
         BikeRentalSystem b6 = new BikeRentalSystem(1);
         b6.registerUser(1, "dsa", 1);
         b6.getUsers().get(0).setCredit(-10);
-        Deposit d = new Deposit(1);
-        //  Lock l = new Lock(1);
+        new Deposit(1);
         b6.addLock(1, 1);
         assertEquals(-1, b6.getBicycle(1, 1, 0), "O saldo deve ser menor que 1");
     }
 
     @Test
-    public void getBicycleValidBikestest() throws UserDoesNotExists, UserAlreadyExists {
-        BikeRentalSystem b6 = new BikeRentalSystem(1);
-        b6.registerUser(1, "dsa", 1);
-        b6.getUsers().get(0).setCredit(100);
-        b6.addLock(1, 1);
-        b6.addLock(1, 2);
-        b6.addLock(1, 3);
-        Bike bike = new Bike(10);
-
-        b6.getDeposits().get(0).getLocks().get(2).setBike(bike);
-        b6.getDeposits().get(0).getLocks().get(2).close();
-        System.out.println(b6.getDeposits().get(0).getLocks().toString());
-        System.out.println(b6.getBicycle(1, 1, 0));
-        assertEquals(10, b6.getBicycle(1, 1, 0), "Não deveria ter bicicletas disponiveis");
-    }
-
-    @Test
-    public void getBicycleNoBikestest() throws UserDoesNotExists, UserAlreadyExists {
+    public void getBicycleNoBikestest_gB5() throws UserDoesNotExists, UserAlreadyExists {
         BikeRentalSystem b7 = new BikeRentalSystem(1);
         b7.registerUser(1, "dsa", 1);
         b7.getUsers().get(0).setCredit(100);
@@ -222,5 +200,36 @@ public class BikeRentaltests {
         b7.getDeposits().get(0).getLocks().get(1).open();
         b7.getDeposits().get(0).getLocks().get(2).open();
         assertEquals(-1, b7.getBicycle(1, 1, 0), "Não deveria ter bicicletas disponiveis");
+    }
+
+    @Test
+    public void getBicycleValidBikestest_gB4() throws UserDoesNotExists, UserAlreadyExists {
+        BikeRentalSystem b6 = new BikeRentalSystem(1);
+        b6.registerUser(1, "dsa", 1);
+        b6.getUsers().get(0).setCredit(100);
+        b6.addLock(1, 1);
+        b6.addLock(1, 2);
+        b6.addLock(1, 3);
+        Bike bike = new Bike(10);
+
+        b6.getDeposits().get(0).getLocks().get(2).setBike(bike);
+        b6.getDeposits().get(0).getLocks().get(2).close();
+        assertEquals(10, b6.getBicycle(1, 1, 0), "Não deveria ter bicicletas disponiveis");
+    }
+
+    @Test
+    public void getBicycleAlreadyRented_gB6() throws UserDoesNotExists, UserAlreadyExists {
+        BikeRentalSystem b6 = new BikeRentalSystem(1);
+        b6.registerUser(1, "dsa", 1);
+        b6.getUsers().get(0).setCredit(100);
+        b6.addLock(1, 1);
+        b6.addLock(1, 2);
+        b6.addLock(1, 3);
+        Bike bike = new Bike(10);
+        Bike bike2 = new Bike(11);
+        b6.getUsers().get(0).setBike(bike);
+        b6.getDeposits().get(0).getLocks().get(2).setBike(bike2);
+        b6.getDeposits().get(0).getLocks().get(2).close();
+        assertEquals(-1, b6.getBicycle(1, 1, 0), "O user ja tem uma bike alugada. nao pode alugar outra");
     }
 }
